@@ -1,0 +1,487 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Navigation } from '@/components/navigation'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar } from 'recharts'
+import { TrendingUp, TrendingDown, AlertTriangle, Thermometer, Droplets, Wind, Calendar, Download } from 'lucide-react'
+import { cn, detectAnomalies, linearRegression, formatEnergy, formatCurrency } from '@/lib/utils'
+
+interface EnergyData {
+  id: number
+  timestamp: string
+  kWh: number
+  cost: number
+  co2: number
+  source: string
+}
+
+interface WeatherData {
+  date: string
+  avgTemp: number
+  minTemp: number
+  maxTemp: number
+  precipitation: number
+  windSpeed: number
+  pressure: number
+  heatingDegreeDays: number
+  coolingDegreeDays: number
+}
+
+interface AnalyticsData {
+  date: string
+  kWh: number
+  cost: number
+  avgTemp: number
+  heatingDegreeDays: number
+  coolingDegreeDays: number
+  normalizedUsage: number
+  isAnomaly: boolean
+  anomalyScore: number
+}
+
+export default function AnalyticsPage() {
+  const [energyData, setEnergyData] = useState<EnergyData[]>([])
+  const [weatherData, setWeatherData] = useState<WeatherData[]>([])
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [dateRange, setDateRange] = useState({
+    start: typeof window !== 'undefined' ? new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '', // 90 days ago
+    end: typeof window !== 'undefined' ? new Date().toISOString().split('T')[0] : ''
+  })
+
+  // Initialize date range on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (!dateRange.start || !dateRange.end)) {
+      setDateRange({
+        start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        end: new Date().toISOString().split('T')[0]
+      })
+    }
+  }, [])
+
+  // Mock data for demonstration (replace with actual API calls)
+  useEffect(() => {
+    const generateMockData = () => {
+      const mockEnergyData: EnergyData[] = []
+      const mockWeatherData: WeatherData[] = []
+      const mockAnalyticsData: AnalyticsData[] = []
+      
+      for (let i = 0; i < 90; i++) {
+        const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000)
+        const dateStr = date.toISOString().split('T')[0]
+        
+        // Generate seasonal temperature variation
+        const dayOfYear = date.getDate() + date.getMonth() * 30
+        const baseTemp = 15 + 10 * Math.sin((dayOfYear / 365) * 2 * Math.PI)
+        const avgTemp = baseTemp + (Math.random() - 0.5) * 10
+        
+        const heatingDegreeDays = Math.max(0, 18 - avgTemp)
+        const coolingDegreeDays = Math.max(0, avgTemp - 18)
+        
+        // Energy usage correlated with temperature
+        const baseUsage = 150
+        const heatingUsage = heatingDegreeDays * 8
+        const coolingUsage = coolingDegreeDays * 6
+        const randomVariation = (Math.random() - 0.5) * 30
+        
+        // Add some anomalies
+        const isAnomalyDay = Math.random() < 0.05 // 5% chance
+        const anomalyMultiplier = isAnomalyDay ? 1.5 + Math.random() : 1
+        
+        const kWh = (baseUsage + heatingUsage + coolingUsage + randomVariation) * anomalyMultiplier
+        const cost = kWh * 0.12 // €0.12 per kWh
+        
+        mockEnergyData.push({
+          id: i,
+          timestamp: date.toISOString(),
+          kWh: Math.round(kWh * 100) / 100,
+          cost: Math.round(cost * 100) / 100,
+          co2: Math.round(kWh * 0.4 * 100) / 100, // 0.4 kg CO2 per kWh
+          source: 'Mock Data'
+        })
+        
+        mockWeatherData.push({
+          date: dateStr,
+          avgTemp: Math.round(avgTemp * 10) / 10,
+          minTemp: Math.round((avgTemp - 5) * 10) / 10,
+          maxTemp: Math.round((avgTemp + 5) * 10) / 10,
+          precipitation: Math.random() * 10,
+          windSpeed: Math.random() * 20,
+          pressure: 1013 + (Math.random() - 0.5) * 50,
+          heatingDegreeDays: Math.round(heatingDegreeDays * 10) / 10,
+          coolingDegreeDays: Math.round(coolingDegreeDays * 10) / 10
+        })
+        
+        // Calculate weather-normalized usage
+        const expectedUsage = baseUsage + heatingUsage + coolingUsage
+        const normalizedUsage = (kWh / expectedUsage) * baseUsage
+        
+        mockAnalyticsData.push({
+          date: dateStr,
+          kWh: Math.round(kWh * 100) / 100,
+          cost: Math.round(cost * 100) / 100,
+          avgTemp: Math.round(avgTemp * 10) / 10,
+          heatingDegreeDays: Math.round(heatingDegreeDays * 10) / 10,
+          coolingDegreeDays: Math.round(coolingDegreeDays * 10) / 10,
+          normalizedUsage: Math.round(normalizedUsage * 100) / 100,
+          isAnomaly: isAnomalyDay,
+          anomalyScore: isAnomalyDay ? Math.random() * 0.5 + 0.5 : Math.random() * 0.3
+        })
+      }
+      
+      // Detect anomalies using the utility function
+      const usageValues = mockAnalyticsData.map(d => d.kWh)
+      const anomalies = detectAnomalies(usageValues)
+      
+      mockAnalyticsData.forEach((item, index) => {
+        item.isAnomaly = anomalies[index]
+        item.anomalyScore = anomalies[index] ? 0.8 + Math.random() * 0.2 : Math.random() * 0.3
+      })
+      
+      setEnergyData(mockEnergyData.reverse())
+      setWeatherData(mockWeatherData.reverse())
+      setAnalyticsData(mockAnalyticsData.reverse())
+      setLoading(false)
+    }
+    
+    generateMockData()
+  }, [dateRange])
+
+  // Calculate correlation between temperature and energy usage
+  const calculateCorrelation = () => {
+    if (analyticsData.length < 2) return 0
+    
+    const temps = analyticsData.map(d => d.avgTemp)
+    const usage = analyticsData.map(d => d.kWh)
+    
+    const n = temps.length
+    const sumX = temps.reduce((a, b) => a + b, 0)
+    const sumY = usage.reduce((a, b) => a + b, 0)
+    const sumXY = temps.reduce((sum, temp, i) => sum + temp * usage[i], 0)
+    const sumX2 = temps.reduce((sum, temp) => sum + temp * temp, 0)
+    const sumY2 = usage.reduce((sum, u) => sum + u * u, 0)
+    
+    const correlation = (n * sumXY - sumX * sumY) / Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY))
+    return Math.round(correlation * 1000) / 1000
+  }
+
+  const correlation = calculateCorrelation()
+  const anomalies = analyticsData.filter(d => d.isAnomaly)
+  const avgNormalizedUsage = analyticsData.length > 0 
+    ? analyticsData.reduce((sum, d) => sum + d.normalizedUsage, 0) / analyticsData.length 
+    : 0
+
+  const exportAnalytics = () => {
+    const csvContent = [
+      ['Date', 'Energy (kWh)', 'Cost (€)', 'Temperature (°C)', 'Normalized Usage', 'Anomaly', 'Anomaly Score'].join(','),
+      ...analyticsData.map(d => [
+        d.date,
+        d.kWh,
+        d.cost,
+        d.avgTemp,
+        d.normalizedUsage,
+        d.isAnomaly ? 'Yes' : 'No',
+        d.anomalyScore
+      ].join(','))
+    ].join('\n')
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `energy-analytics-${dateRange.start}-to-${dateRange.end}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 text-white">
+        <Navigation />
+        <div className="flex items-center justify-center h-96">
+          <div className="text-lg">Loading analytics data...</div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-950 text-white">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Energy Analytics</h1>
+            <p className="text-gray-400">Weather normalization and anomaly detection</p>
+          </div>
+          <Button onClick={exportAnalytics} className="bg-blue-600 hover:bg-blue-700">
+            <Download className="w-4 h-4 mr-2" />
+            Export Data
+          </Button>
+        </div>
+
+        {/* Date Range Selector */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              Date Range
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4 items-center">
+              <div>
+                <label className="block text-sm font-medium mb-1">Start Date</label>
+                <input
+                  type="date"
+                  value={dateRange.start}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                  className="bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">End Date</label>
+                <input
+                  type="date"
+                  value={dateRange.end}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                  className="bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-400">Temperature Correlation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Thermometer className="w-5 h-5 text-orange-500" />
+                <span className="text-2xl font-bold">{Math.abs(correlation).toFixed(3)}</span>
+                {correlation > 0 ? <TrendingUp className="w-4 h-4 text-green-500" /> : <TrendingDown className="w-4 h-4 text-red-500" />}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {correlation > 0 ? 'Positive' : 'Negative'} correlation
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-400">Anomalies Detected</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                <span className="text-2xl font-bold">{anomalies.length}</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {((anomalies.length / analyticsData.length) * 100).toFixed(1)}% of readings
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-400">Avg Normalized Usage</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-500" />
+                <span className="text-2xl font-bold">{formatEnergy(avgNormalizedUsage)}</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Weather adjusted</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-400">Analysis Period</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-purple-500" />
+                <span className="text-2xl font-bold">{analyticsData.length}</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Days analyzed</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Energy vs Temperature */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Energy Usage vs Temperature</CardTitle>
+              <CardDescription>Correlation between outdoor temperature and energy consumption</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <ScatterChart data={analyticsData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis 
+                    dataKey="avgTemp" 
+                    stroke="#9CA3AF"
+                    label={{ value: 'Temperature (°C)', position: 'insideBottom', offset: -5 }}
+                  />
+                  <YAxis 
+                    stroke="#9CA3AF"
+                    label={{ value: 'Energy (kWh)', angle: -90, position: 'insideLeft' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151' }}
+                    formatter={(value: any, name: string) => [
+                      name === 'kWh' ? formatEnergy(value) : value,
+                      name === 'kWh' ? 'Energy Usage' : name
+                    ]}
+                  />
+                  <Scatter 
+                    dataKey="kWh" 
+                    fill="#1E45A0"
+                  />
+                </ScatterChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Weather Normalized Usage */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Weather Normalized Usage</CardTitle>
+              <CardDescription>Energy usage adjusted for weather conditions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={analyticsData.slice(-30)}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#9CA3AF"
+                    tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                  />
+                  <YAxis stroke="#9CA3AF" />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151' }}
+                    labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                    formatter={(value: any, name: string) => [
+                      formatEnergy(value),
+                      name === 'kWh' ? 'Actual Usage' : 'Normalized Usage'
+                    ]}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="kWh" 
+                    stroke="#1E45A0" 
+                    name="Actual Usage"
+                    strokeWidth={2}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="normalizedUsage" 
+                    stroke="#2A98AA" 
+                    name="Normalized Usage"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Degree Days Analysis */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Heating & Cooling Degree Days</CardTitle>
+            <CardDescription>Temperature-based energy demand indicators</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analyticsData.slice(-30)}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#9CA3AF"
+                  tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                />
+                <YAxis stroke="#9CA3AF" />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151' }}
+                  labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                />
+                <Legend />
+                <Bar dataKey="heatingDegreeDays" fill="#987148" name="Heating Degree Days" />
+                <Bar dataKey="coolingDegreeDays" fill="#1E45A0" name="Cooling Degree Days" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Anomalies Table */}
+        {anomalies.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                Detected Anomalies
+              </CardTitle>
+              <CardDescription>Unusual energy consumption patterns</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="text-left py-2">Date</th>
+                      <th className="text-left py-2">Usage</th>
+                      <th className="text-left py-2">Temperature</th>
+                      <th className="text-left py-2">Anomaly Score</th>
+                      <th className="text-left py-2">Deviation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {anomalies.slice(0, 10).map((anomaly, index) => {
+                      const deviation = ((anomaly.kWh - avgNormalizedUsage) / avgNormalizedUsage * 100)
+                      return (
+                        <tr key={index} className="border-b border-gray-800">
+                          <td className="py-2">{new Date(anomaly.date).toLocaleDateString()}</td>
+                          <td className="py-2">{formatEnergy(anomaly.kWh)}</td>
+                          <td className="py-2">{anomaly.avgTemp.toFixed(1)}°C</td>
+                          <td className="py-2">
+                            <span className={cn(
+                              "px-2 py-1 rounded text-xs",
+                              anomaly.anomalyScore > 0.7 ? "bg-red-900 text-red-200" : "bg-yellow-900 text-yellow-200"
+                            )}>
+                              {anomaly.anomalyScore.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="py-2">
+                            <span className={cn(
+                              "font-medium",
+                              deviation > 0 ? "text-red-400" : "text-green-400"
+                            )}>
+                              {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  )
+}

@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #03030B;
+  --foreground: #BFD9EA;
+  --card: #132059;
+  --card-foreground: #BFD9EA;
+  --popover: #132059;
+  --popover-foreground: #BFD9EA;
+  --primary: #1E45A0;
+  --primary-foreground: #BFD9EA;
+  --secondary: #374E52;
+  --secondary-foreground: #BFD9EA;
+  --muted: #374E52;
+  --muted-foreground: #BFD9EA;
+  --accent: #2A98AA;
+  --accent-foreground: #BFD9EA;
+  --destructive: #987148;
+  --destructive-foreground: #BFD9EA;
+  --border: #374E52;
+  --input: #374E52;
+  --ring: #2A98AA;
+  --radius: 1rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  font-variation-settings: 'opsz' 32;
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Ensure dark theme is always applied */
+html {
+  color-scheme: dark;
+}
+
+.dark {
+  --background: #03030B;
+  --foreground: #BFD9EA;
 }
