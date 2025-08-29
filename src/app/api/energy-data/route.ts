@@ -47,9 +47,9 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate summary statistics
-    const totalKWh = energyData.reduce((sum: number, reading: { kWh: number }) => sum + reading.kWh, 0)
-    const totalCost = energyData.reduce((sum: number, reading: { cost: number }) => sum + reading.cost, 0)
-    const totalCO2 = energyData.reduce((sum: number, reading: { co2: number }) => sum + reading.co2, 0)
+    const totalKWh = energyData.reduce((sum: number, reading: typeof energyData[0]) => sum + reading.kWh, 0)
+    const totalCost = energyData.reduce((sum: number, reading: typeof energyData[0]) => sum + (reading.cost || 0), 0)
+    const totalCO2 = energyData.reduce((sum: number, reading: typeof energyData[0]) => sum + (reading.co2 || 0), 0)
     const avgKWh = energyData.length > 0 ? totalKWh / energyData.length : 0
 
     return NextResponse.json({
