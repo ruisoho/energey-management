@@ -43,24 +43,25 @@ export default function UploadPage() {
         const errors: string[] = []
         const validData: EnergyData[] = []
 
-        results.data.forEach((row: Record<string, string>, index: number) => {
+        results.data.forEach((row: unknown, index: number) => {
+          const rowData = row as Record<string, string>
           try {
             // Validate required fields
-            if (!row.timestamp || !row.kWh || !row.cost) {
+            if (!rowData.timestamp || !rowData.kWh || !rowData.cost) {
               errors.push(`Row ${index + 1}: Missing required fields (timestamp, kWh, cost)`)
               return
             }
 
             // Parse and validate data
-            const timestamp = new Date(row.timestamp)
+            const timestamp = new Date(rowData.timestamp)
             if (isNaN(timestamp.getTime())) {
               errors.push(`Row ${index + 1}: Invalid timestamp format`)
               return
             }
 
-            const kWh = parseFloat(row.kWh)
-            const cost = parseFloat(row.cost)
-            const co2 = parseFloat(row.co2 || '0')
+            const kWh = parseFloat(rowData.kWh)
+            const cost = parseFloat(rowData.cost)
+            const co2 = parseFloat(rowData.co2 || '0')
 
             if (isNaN(kWh) || isNaN(cost) || isNaN(co2)) {
               errors.push(`Row ${index + 1}: Invalid numeric values`)
@@ -72,7 +73,7 @@ export default function UploadPage() {
               kWh,
               cost,
               co2,
-              source: row.source || 'Manual Upload'
+              source: rowData.source || 'Manual Upload'
             })
           } catch (error) {
             errors.push(`Row ${index + 1}: ${error}`)
