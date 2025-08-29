@@ -43,7 +43,7 @@ export default function UploadPage() {
         const errors: string[] = []
         const validData: EnergyData[] = []
 
-        results.data.forEach((row: any, index: number) => {
+        results.data.forEach((row: Record<string, string>, index: number) => {
           try {
             // Validate required fields
             if (!row.timestamp || !row.kWh || !row.cost) {
@@ -330,7 +330,7 @@ export default function UploadPage() {
                   <h4 className="font-medium mb-3">Optional Columns:</h4>
                   <ul className="space-y-2 text-sm">
                     <li><code className="bg-muted px-2 py-1 rounded">co2</code> - CO₂ emissions in kg (defaults to 0)</li>
-                    <li><code className="bg-muted px-2 py-1 rounded">source</code> - Data source identifier (defaults to 'Manual Upload')</li>
+                    <li><code className="bg-muted px-2 py-1 rounded">source</code> - Data source identifier (defaults to &apos;Manual Upload&apos;)</li>
                   </ul>
                 </div>
               </div>
