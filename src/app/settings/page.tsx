@@ -200,20 +200,20 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-white text-black">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="ml-72 container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Settings</h1>
-            <p className="text-gray-400">Configure your building and system preferences</p>
+            <h1 className="text-3xl font-bold mb-2 text-black">Settings</h1>
+            <p className="text-gray-600">Configure your building and system preferences</p>
           </div>
           <div className="flex gap-3">
             <Button 
               onClick={handleReset} 
               variant="outline" 
-              className="border-gray-600 hover:bg-gray-800"
+              className="border-gray-300 hover:bg-gray-50 text-gray-700"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Reset
@@ -221,7 +221,7 @@ export default function SettingsPage() {
             <Button 
               onClick={handleSave} 
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-azia-primary hover:bg-azia-primary/90 text-white"
             >
               {loading ? (
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
@@ -253,8 +253,8 @@ export default function SettingsPage() {
                   value={settings.buildingName}
                   onChange={(e) => updateSetting('buildingName', e.target.value)}
                   className={cn(
-                    "w-full bg-gray-800 border rounded px-3 py-2",
-                    errors.buildingName ? "border-red-500" : "border-gray-700"
+                    "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                    errors.buildingName ? "border-red-500" : "border-gray-300"
                   )}
                   placeholder="Enter building name"
                 />
@@ -269,8 +269,8 @@ export default function SettingsPage() {
                   value={settings.address}
                   onChange={(e) => updateSetting('address', e.target.value)}
                   className={cn(
-                    "w-full bg-gray-800 border rounded px-3 py-2 h-20 resize-none",
-                    errors.address ? "border-red-500" : "border-gray-700"
+                    "w-full bg-white border rounded px-3 py-2 h-20 resize-none text-gray-900",
+                    errors.address ? "border-red-500" : "border-gray-300"
                   )}
                   placeholder="Enter full address"
                 />
@@ -288,8 +288,8 @@ export default function SettingsPage() {
                     value={settings.latitude}
                     onChange={(e) => updateSetting('latitude', parseFloat(e.target.value) || 0)}
                     className={cn(
-                      "w-full bg-gray-800 border rounded px-3 py-2",
-                      errors.latitude ? "border-red-500" : "border-gray-700"
+                      "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                      errors.latitude ? "border-red-500" : "border-gray-300"
                     )}
                   />
                   {errors.latitude && (
@@ -304,8 +304,8 @@ export default function SettingsPage() {
                     value={settings.longitude}
                     onChange={(e) => updateSetting('longitude', parseFloat(e.target.value) || 0)}
                     className={cn(
-                      "w-full bg-gray-800 border rounded px-3 py-2",
-                      errors.longitude ? "border-red-500" : "border-gray-700"
+                      "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                      errors.longitude ? "border-red-500" : "border-gray-300"
                     )}
                   />
                   {errors.longitude && (
@@ -322,8 +322,8 @@ export default function SettingsPage() {
                     value={settings.floorArea}
                     onChange={(e) => updateSetting('floorArea', parseInt(e.target.value) || 0)}
                     className={cn(
-                      "w-full bg-gray-800 border rounded px-3 py-2",
-                      errors.floorArea ? "border-red-500" : "border-gray-700"
+                      "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                      errors.floorArea ? "border-red-500" : "border-gray-300"
                     )}
                   />
                   {errors.floorArea && (
@@ -337,8 +337,8 @@ export default function SettingsPage() {
                     value={settings.constructionYear}
                     onChange={(e) => updateSetting('constructionYear', parseInt(e.target.value) || 0)}
                     className={cn(
-                      "w-full bg-gray-800 border rounded px-3 py-2",
-                      errors.constructionYear ? "border-red-500" : "border-gray-700"
+                      "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                      errors.constructionYear ? "border-red-500" : "border-gray-300"
                     )}
                   />
                   {errors.constructionYear && (
@@ -352,7 +352,7 @@ export default function SettingsPage() {
                 <select
                   value={settings.buildingType}
                   onChange={(e) => updateSetting('buildingType', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                 >
                   {buildingTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -363,13 +363,13 @@ export default function SettingsPage() {
           </Card>
 
           {/* Systems Configuration */}
-          <Card>
+          <Card className="bg-white border border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-black">
                 <Zap className="w-5 h-5" />
                 Systems Configuration
               </CardTitle>
-              <CardDescription>HVAC systems and energy settings</CardDescription>
+              <CardDescription className="text-gray-600">HVAC systems and energy settings</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -377,7 +377,7 @@ export default function SettingsPage() {
                 <select
                   value={settings.heatingSystem}
                   onChange={(e) => updateSetting('heatingSystem', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                 >
                   {heatingSystemTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -390,7 +390,7 @@ export default function SettingsPage() {
                 <select
                   value={settings.coolingSystem}
                   onChange={(e) => updateSetting('coolingSystem', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                 >
                   {coolingSystemTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -407,8 +407,8 @@ export default function SettingsPage() {
                     value={settings.energyTariff}
                     onChange={(e) => updateSetting('energyTariff', parseFloat(e.target.value) || 0)}
                     className={cn(
-                      "w-full bg-gray-800 border rounded px-3 py-2",
-                      errors.energyTariff ? "border-red-500" : "border-gray-700"
+                      "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                      errors.energyTariff ? "border-red-500" : "border-gray-300"
                     )}
                   />
                   {errors.energyTariff && (
@@ -423,8 +423,8 @@ export default function SettingsPage() {
                     value={settings.co2Factor}
                     onChange={(e) => updateSetting('co2Factor', parseFloat(e.target.value) || 0)}
                     className={cn(
-                      "w-full bg-gray-800 border rounded px-3 py-2",
-                      errors.co2Factor ? "border-red-500" : "border-gray-700"
+                      "w-full bg-white border rounded px-3 py-2 text-gray-900",
+                      errors.co2Factor ? "border-red-500" : "border-gray-300"
                     )}
                   />
                   {errors.co2Factor && (
@@ -439,7 +439,7 @@ export default function SettingsPage() {
                   type="text"
                   value={settings.weatherStation}
                   onChange={(e) => updateSetting('weatherStation', e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                   placeholder="Meteostat station ID"
                 />
               </div>
@@ -450,7 +450,7 @@ export default function SettingsPage() {
                   <select
                     value={settings.timezone}
                     onChange={(e) => updateSetting('timezone', e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                    className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                   >
                     <option value="Europe/Berlin">Europe/Berlin</option>
                     <option value="Europe/London">Europe/London</option>
@@ -464,7 +464,7 @@ export default function SettingsPage() {
                   <select
                     value={settings.currency}
                     onChange={(e) => updateSetting('currency', e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                    className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                   >
                     {currencies.map(currency => (
                       <option key={currency.code} value={currency.code}>
@@ -478,13 +478,13 @@ export default function SettingsPage() {
           </Card>
 
           {/* Notifications */}
-          <Card>
+          <Card className="bg-white border border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-black">
                 <AlertCircle className="w-5 h-5" />
                 Notifications
               </CardTitle>
-              <CardDescription>Configure alert and notification preferences</CardDescription>
+              <CardDescription className="text-gray-600">Configure alert and notification preferences</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
@@ -493,7 +493,7 @@ export default function SettingsPage() {
                     type="checkbox"
                     checked={settings.notifications.anomalyAlerts}
                     onChange={(e) => updateNestedSetting('notifications', 'anomalyAlerts', e.target.checked)}
-                    className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded"
+                    className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded"
                   />
                   <span>Anomaly Detection Alerts</span>
                 </label>
@@ -503,7 +503,7 @@ export default function SettingsPage() {
                     type="checkbox"
                     checked={settings.notifications.monthlyReports}
                     onChange={(e) => updateNestedSetting('notifications', 'monthlyReports', e.target.checked)}
-                    className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded"
+                    className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded"
                   />
                   <span>Monthly Energy Reports</span>
                 </label>
@@ -513,7 +513,7 @@ export default function SettingsPage() {
                     type="checkbox"
                     checked={settings.notifications.maintenanceReminders}
                     onChange={(e) => updateNestedSetting('notifications', 'maintenanceReminders', e.target.checked)}
-                    className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded"
+                    className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded"
                   />
                   <span>Maintenance Reminders</span>
                 </label>
@@ -523,7 +523,7 @@ export default function SettingsPage() {
                     type="checkbox"
                     checked={settings.notifications.costThresholds}
                     onChange={(e) => updateNestedSetting('notifications', 'costThresholds', e.target.checked)}
-                    className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded"
+                    className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded"
                   />
                   <span>Cost Threshold Alerts</span>
                 </label>
@@ -532,13 +532,13 @@ export default function SettingsPage() {
           </Card>
 
           {/* Alert Thresholds */}
-          <Card>
+          <Card className="bg-white border border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-black">
                 <Thermometer className="w-5 h-5" />
                 Alert Thresholds
               </CardTitle>
-              <CardDescription>Set limits for automated alerts</CardDescription>
+              <CardDescription className="text-gray-600">Set limits for automated alerts</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -547,7 +547,7 @@ export default function SettingsPage() {
                   type="number"
                   value={settings.thresholds.highUsageAlert}
                   onChange={(e) => updateNestedSetting('thresholds', 'highUsageAlert', parseInt(e.target.value) || 0)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                 />
               </div>
 
@@ -557,7 +557,7 @@ export default function SettingsPage() {
                   type="number"
                   value={settings.thresholds.costAlert}
                   onChange={(e) => updateNestedSetting('thresholds', 'costAlert', parseInt(e.target.value) || 0)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                 />
               </div>
 
@@ -570,7 +570,7 @@ export default function SettingsPage() {
                   max="1"
                   value={settings.thresholds.anomalyScore}
                   onChange={(e) => updateNestedSetting('thresholds', 'anomalyScore', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900"
                 />
                 <p className="text-xs text-gray-500 mt-1">Score between 0 and 1 (higher = more sensitive)</p>
               </div>

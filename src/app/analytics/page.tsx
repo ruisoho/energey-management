@@ -47,18 +47,16 @@ export default function AnalyticsPage() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([])
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState({
-    start: typeof window !== 'undefined' ? new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '', // 90 days ago
-    end: typeof window !== 'undefined' ? new Date().toISOString().split('T')[0] : ''
+    start: '',
+    end: ''
   })
 
   // Initialize date range on client side
   useEffect(() => {
-    if (typeof window !== 'undefined' && (!dateRange.start || !dateRange.end)) {
-      setDateRange({
-        start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        end: new Date().toISOString().split('T')[0]
-      })
-    }
+    setDateRange({
+      start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      end: new Date().toISOString().split('T')[0]
+    })
   }, [])
 
   // Mock data for demonstration (replace with actual API calls)
@@ -198,57 +196,70 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 text-white">
-        <Navigation />
-        <div className="flex items-center justify-center h-96">
-          <div className="text-lg">Loading analytics data...</div>
+    <div className="min-h-screen bg-white">
+      <Navigation />
+      <div className="ml-72 flex items-center justify-center h-96">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-8 h-8 border-4 border-azia-primary border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-lg text-gray-600 font-medium">Loading analytics data...</div>
         </div>
       </div>
-    )
+    </div>
+  )
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-white">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Energy Analytics</h1>
-            <p className="text-gray-400">Weather normalization and anomaly detection</p>
+      <div className="ml-72 container mx-auto px-6 py-8">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 space-y-4 lg:space-y-0">
+          <div className="space-y-2">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-azia-primary to-azia-secondary rounded-xl flex items-center justify-center shadow-lg">
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold text-black">Energy Analytics</h1>
+            </div>
+            <p className="text-gray-600 text-lg">Weather normalization and anomaly detection</p>
           </div>
-          <Button onClick={exportAnalytics} className="bg-blue-600 hover:bg-blue-700">
+          <Button 
+            onClick={exportAnalytics} 
+            className="azia-btn-primary px-6 py-3 rounded-xl font-medium"
+          >
             <Download className="w-4 h-4 mr-2" />
             Export Data
           </Button>
         </div>
 
         {/* Date Range Selector */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Date Range
+        <Card className="bg-white border border-gray-200 shadow-sm mb-8">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3 text-black">
+              <div className="w-8 h-8 bg-gradient-to-r from-azia-primary to-azia-secondary rounded-lg flex items-center justify-center">
+                <Calendar className="w-4 h-4 text-white" />
+              </div>
+              Date Range Selection
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4 items-center">
-              <div>
-                <label className="block text-sm font-medium mb-1">Start Date</label>
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end">
+              <div className="flex-1">
+                <label className="block text-sm font-semibold text-gray-900 mb-2">Start Date</label>
                 <input
                   type="date"
                   value={dateRange.start}
                   onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                  className="bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border-2 border-gray-300 focus:border-azia-primary rounded-xl px-4 py-3 text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-azia-primary/20"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">End Date</label>
+              <div className="flex-1">
+                <label className="block text-sm font-semibold text-gray-900 mb-2">End Date</label>
                 <input
                   type="date"
                   value={dateRange.end}
                   onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                  className="bg-gray-800 border border-gray-700 rounded px-3 py-2"
+                  className="w-full bg-white border-2 border-gray-300 focus:border-azia-primary rounded-xl px-4 py-3 text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-azia-primary/20"
                 />
               </div>
             </div>
@@ -257,60 +268,91 @@ export default function AnalyticsPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-400">Temperature Correlation</CardTitle>
+          <Card className="bg-white border border-gray-200 shadow-sm group">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                <div className="w-6 h-6 bg-gradient-to-r from-azia-warning to-azia-error rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <Thermometer className="w-3 h-3 text-white" />
+                </div>
+                Temperature Correlation
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <Thermometer className="w-5 h-5 text-orange-500" />
-                <span className="text-2xl font-bold">{Math.abs(correlation).toFixed(3)}</span>
-                {correlation > 0 ? <TrendingUp className="w-4 h-4 text-green-500" /> : <TrendingDown className="w-4 h-4 text-red-500" />}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-gray-900">{Math.abs(correlation).toFixed(3)}</span>
+                  {correlation > 0 ? 
+                    <TrendingUp className="w-5 h-5 text-azia-success" /> : 
+                    <TrendingDown className="w-5 h-5 text-azia-error" />
+                  }
+                </div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-sm text-gray-600 mt-2 font-medium">
                 {correlation > 0 ? 'Positive' : 'Negative'} correlation
               </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-400">Anomalies Detected</CardTitle>
+          <Card className="bg-white border border-gray-200 shadow-sm group">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                <div className="w-6 h-6 bg-gradient-to-r from-azia-warning to-azia-accent rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <AlertTriangle className="w-3 h-3 text-white" />
+                </div>
+                Anomalies Detected
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-yellow-500" />
-                <span className="text-2xl font-bold">{anomalies.length}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-gray-900">{anomalies.length}</span>
+                <div className="text-right">
+                  <div className="text-sm font-semibold text-azia-warning">
+                    {((anomalies.length / analyticsData.length) * 100).toFixed(1)}%
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                {((anomalies.length / analyticsData.length) * 100).toFixed(1)}% of readings
+              <p className="text-sm text-gray-600 mt-2 font-medium">
+                of total readings
               </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-400">Avg Normalized Usage</CardTitle>
+          <Card className="bg-white border border-gray-200 shadow-sm group">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                <div className="w-6 h-6 bg-gradient-to-r from-azia-primary to-azia-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <TrendingUp className="w-3 h-3 text-white" />
+                </div>
+                Avg Normalized Usage
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-blue-500" />
-                <span className="text-2xl font-bold">{formatEnergy(avgNormalizedUsage)}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-gray-900">{formatEnergy(avgNormalizedUsage)}</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Weather adjusted</p>
+              <p className="text-sm text-gray-600 mt-2 font-medium">
+                Weather adjusted
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-400">Analysis Period</CardTitle>
+          <Card className="bg-white border border-gray-200 shadow-sm group">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                <div className="w-6 h-6 bg-gradient-to-r from-azia-primary to-azia-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                  <Calendar className="w-3 h-3 text-white" />
+                </div>
+                Analysis Period
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-purple-500" />
-                <span className="text-2xl font-bold">{analyticsData.length}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-gray-900">{analyticsData.length}</span>
+                <div className="text-sm font-semibold text-azia-primary">days</div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Days analyzed</p>
+              <p className="text-sm text-gray-600 mt-2 font-medium">
+                Total analyzed
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -318,26 +360,41 @@ export default function AnalyticsPage() {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Energy vs Temperature */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Energy Usage vs Temperature</CardTitle>
-              <CardDescription>Correlation between outdoor temperature and energy consumption</CardDescription>
+          <Card className="bg-white border border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-black">
+                <div className="w-8 h-8 bg-gradient-to-r from-azia-primary to-azia-secondary rounded-lg flex items-center justify-center">
+                  <Thermometer className="w-4 h-4 text-white" />
+                </div>
+                Energy Usage vs Temperature
+              </CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
+                Correlation between outdoor temperature and energy consumption
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={320}>
                 <ScatterChart data={analyticsData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis 
                     dataKey="avgTemp" 
-                    stroke="#9CA3AF"
-                    label={{ value: 'Temperature (°C)', position: 'insideBottom', offset: -5 }}
+                    stroke="#6b7280"
+                    fontSize={12}
+                    label={{ value: 'Temperature (°C)', position: 'insideBottom', offset: -5, style: { textAnchor: 'middle', fill: '#6b7280' } }}
                   />
                   <YAxis 
-                    stroke="#9CA3AF"
-                    label={{ value: 'Energy (kWh)', angle: -90, position: 'insideLeft' }}
+                    stroke="#6b7280"
+                    fontSize={12}
+                    label={{ value: 'Energy (kWh)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#6b7280' } }}
                   />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151' }}
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: 'none',
+                      borderRadius: '16px',
+                      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                      color: '#1f2937'
+                    }}
                     formatter={(value: any, name: string) => [
                       name === 'kWh' ? formatEnergy(value) : value,
                       name === 'kWh' ? 'Energy Usage' : name
@@ -345,7 +402,8 @@ export default function AnalyticsPage() {
                   />
                   <Scatter 
                     dataKey="kWh" 
-                    fill="#1E45A0"
+                    fill="#1e40af"
+                    fillOpacity={0.8}
                   />
                 </ScatterChart>
               </ResponsiveContainer>
@@ -353,23 +411,37 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Weather Normalized Usage */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Weather Normalized Usage</CardTitle>
-              <CardDescription>Energy usage adjusted for weather conditions</CardDescription>
+          <Card className="bg-white border border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-black">
+                <div className="w-8 h-8 bg-gradient-to-r from-azia-accent to-azia-success rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                Weather Normalized Usage
+              </CardTitle>
+              <CardDescription className="text-gray-600 font-medium">
+                Energy usage adjusted for weather conditions
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={320}>
                 <LineChart data={analyticsData.slice(-30)}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis 
                     dataKey="date" 
-                    stroke="#9CA3AF"
+                    stroke="#6b7280"
+                    fontSize={12}
                     tickFormatter={(value) => new Date(value).toLocaleDateString()}
                   />
-                  <YAxis stroke="#9CA3AF" />
+                  <YAxis stroke="#6b7280" fontSize={12} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151' }}
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: 'none',
+                      borderRadius: '16px',
+                      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                      color: '#1f2937'
+                    }}
                     labelFormatter={(value) => new Date(value).toLocaleDateString()}
                     formatter={(value: any, name: string) => [
                       formatEnergy(value),
@@ -380,17 +452,21 @@ export default function AnalyticsPage() {
                   <Line 
                     type="monotone" 
                     dataKey="kWh" 
-                    stroke="#1E45A0" 
+                    stroke="#1e40af" 
                     name="Actual Usage"
-                    strokeWidth={2}
+                    strokeWidth={3}
+                    dot={{ fill: '#1e40af', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#1e40af', strokeWidth: 2, fill: 'white' }}
                   />
                   <Line 
                     type="monotone" 
                     dataKey="normalizedUsage" 
-                    stroke="#2A98AA" 
+                    stroke="#3b82f6" 
                     name="Normalized Usage"
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
+                    strokeWidth={3}
+                    strokeDasharray="8 4"
+                    dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2, fill: 'white' }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -399,28 +475,52 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Degree Days Analysis */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Heating & Cooling Degree Days</CardTitle>
-            <CardDescription>Temperature-based energy demand indicators</CardDescription>
+        <Card className="bg-white border border-gray-200 shadow-sm mb-8">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3 text-black">
+              <div className="w-8 h-8 bg-gradient-to-r from-azia-warning to-azia-error rounded-lg flex items-center justify-center">
+                <Wind className="w-4 h-4 text-white" />
+              </div>
+              Heating & Cooling Degree Days
+            </CardTitle>
+            <CardDescription className="text-gray-600 font-medium">
+              Temperature-based energy demand indicators
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analyticsData.slice(-30)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={analyticsData.slice(-30)} barGap={4}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey="date" 
-                  stroke="#9CA3AF"
+                  stroke="#6b7280"
+                  fontSize={12}
                   tickFormatter={(value) => new Date(value).toLocaleDateString()}
                 />
-                <YAxis stroke="#9CA3AF" />
+                <YAxis stroke="#6b7280" fontSize={12} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151' }}
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: 'none',
+                    borderRadius: '16px',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    color: '#1f2937'
+                  }}
                   labelFormatter={(value) => new Date(value).toLocaleDateString()}
                 />
                 <Legend />
-                <Bar dataKey="heatingDegreeDays" fill="#987148" name="Heating Degree Days" />
-                <Bar dataKey="coolingDegreeDays" fill="#1E45A0" name="Cooling Degree Days" />
+                <Bar 
+                  dataKey="heatingDegreeDays" 
+                  fill="#f59e0b" 
+                  name="Heating Degree Days" 
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
+                  dataKey="coolingDegreeDays" 
+                  fill="#3b82f6" 
+                  name="Cooling Degree Days" 
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -428,46 +528,50 @@ export default function AnalyticsPage() {
 
         {/* Anomalies Table */}
         {anomalies.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-yellow-500" />
+          <Card className="bg-white border border-gray-200 shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-black">
+                <div className="w-8 h-8 bg-gradient-to-r from-azia-error to-azia-warning rounded-lg flex items-center justify-center">
+                  <AlertTriangle className="w-4 h-4 text-white" />
+                </div>
                 Detected Anomalies
               </CardTitle>
-              <CardDescription>Unusual energy consumption patterns</CardDescription>
+              <CardDescription className="text-gray-600 font-medium">
+                Unusual energy consumption patterns requiring attention
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-2">Date</th>
-                      <th className="text-left py-2">Usage</th>
-                      <th className="text-left py-2">Temperature</th>
-                      <th className="text-left py-2">Anomaly Score</th>
-                      <th className="text-left py-2">Deviation</th>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900 text-sm">Date</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900 text-sm">Usage</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900 text-sm">Temperature</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900 text-sm">Anomaly Score</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900 text-sm">Deviation</th>
                     </tr>
                   </thead>
                   <tbody>
                     {anomalies.slice(0, 10).map((anomaly, index) => {
                       const deviation = ((anomaly.kWh - avgNormalizedUsage) / avgNormalizedUsage * 100)
                       return (
-                        <tr key={index} className="border-b border-gray-800">
-                          <td className="py-2">{new Date(anomaly.date).toLocaleDateString()}</td>
-                          <td className="py-2">{formatEnergy(anomaly.kWh)}</td>
-                          <td className="py-2">{anomaly.avgTemp.toFixed(1)}°C</td>
-                          <td className="py-2">
+                        <tr key={index} className="border-b border-gray-100 hover:bg-azia-primary/5 transition-colors duration-200">
+                          <td className="py-4 px-4 text-gray-900 font-medium">{new Date(anomaly.date).toLocaleDateString()}</td>
+                          <td className="py-4 px-4 text-gray-900 font-medium">{formatEnergy(anomaly.kWh)}</td>
+                          <td className="py-4 px-4 text-gray-600">{anomaly.avgTemp.toFixed(1)}°C</td>
+                          <td className="py-4 px-4">
                             <span className={cn(
-                              "px-2 py-1 rounded text-xs",
-                              anomaly.anomalyScore > 0.7 ? "bg-red-900 text-red-200" : "bg-yellow-900 text-yellow-200"
+                              "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold",
+                              anomaly.anomalyScore > 0.7 ? "bg-azia-error/10 text-azia-error" : "bg-azia-warning/10 text-azia-warning"
                             )}>
                               {anomaly.anomalyScore.toFixed(2)}
                             </span>
                           </td>
-                          <td className="py-2">
+                          <td className="py-4 px-4">
                             <span className={cn(
-                              "font-medium",
-                              deviation > 0 ? "text-red-400" : "text-green-400"
+                              "font-bold text-sm",
+                              deviation > 0 ? "text-azia-error" : "text-azia-success"
                             )}>
                               {deviation > 0 ? '+' : ''}{deviation.toFixed(1)}%
                             </span>

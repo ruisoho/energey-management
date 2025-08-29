@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
 :root {
-  --background: #03030B;
-  --foreground: #BFD9EA;
-  --card: #132059;
-  --card-foreground: #BFD9EA;
-  --popover: #132059;
-  --popover-foreground: #BFD9EA;
-  --primary: #1E45A0;
-  --primary-foreground: #BFD9EA;
-  --secondary: #374E52;
-  --secondary-foreground: #BFD9EA;
-  --muted: #374E52;
-  --muted-foreground: #BFD9EA;
-  --accent: #2A98AA;
-  --accent-foreground: #BFD9EA;
-  --destructive: #987148;
-  --destructive-foreground: #BFD9EA;
-  --border: #374E52;
-  --input: #374E52;
-  --ring: #2A98AA;
-  --radius: 1rem;
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --primary: #1e40af;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #64748b;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #ffffff;
+  --ring: #1e40af;
+  --radius: 0.75rem;
+  
+  /* Azia-specific colors */
+  --azia-primary: #1e40af;
+  --azia-primary-dark: #1e3a8a;
+  --azia-secondary: #3b82f6;
+  --azia-accent: #60a5fa;
+  --azia-accent-dark: #2563eb;
+  /* Alert and status colors - Traditional alert colors */
+  --azia-success: #22c55e;
+  --azia-success-light: #dcfce7;
+  --azia-success-dark: #16a34a;
+  
+  --azia-warning: #f97316;
+  --azia-warning-light: #fed7aa;
+  --azia-warning-dark: #ea580c;
+  
+  --azia-error: #ef4444;
+  --azia-error-light: #fee2e2;
+  --azia-error-dark: #dc2626;
+  
+  --azia-info: #3b82f6;
+  --azia-info-light: #dbeafe;
+  --azia-info-dark: #1d4ed8;
+  
+  --azia-critical: #dc2626;
+  --azia-critical-light: #fee2e2;
+  --azia-critical-dark: #b91c1c;
+  
+  --azia-maintenance: #eab308;
+  --azia-maintenance-light: #fef3c7;
+  --azia-maintenance-dark: #ca8a04;
+  --azia-gray-50: #f8fafc;
+  --azia-gray-100: #f1f5f9;
+  --azia-gray-200: #e2e8f0;
+  --azia-gray-300: #cbd5e1;
+  --azia-gray-400: #94a3b8;
+  --azia-gray-500: #64748b;
+  --azia-gray-600: #475569;
+  --azia-gray-700: #334155;
+  --azia-gray-800: #1e293b;
+  --azia-gray-900: #0f172a;
 }
 
 * {
@@ -30,10 +71,11 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-feature-settings: 'cv11', 'ss01';
   font-variation-settings: 'opsz' 32;
   min-height: 100vh;
+  line-height: 1.6;
 }
 
 html {
@@ -42,28 +84,181 @@ html {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--muted);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: var(--muted-foreground);
 }
 
-/* Ensure dark theme is always applied */
+/* Light theme styling */
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
-.dark {
-  --background: #03030B;
-  --foreground: #BFD9EA;
+/* Card shadows and modern styling */
+.card-shadow {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
+
+.card-shadow-lg {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Azia Gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--azia-primary) 0%, var(--azia-primary-dark) 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, var(--azia-secondary) 0%, var(--azia-accent-dark) 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, var(--azia-accent) 0%, var(--azia-accent-dark) 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, var(--azia-success) 0%, #059669 100%);
+}
+
+.gradient-warning {
+  background: linear-gradient(135deg, var(--azia-warning) 0%, #d97706 100%);
+}
+
+/* Azia card styles */
+.azia-card {
+  background: var(--card);
+  border: 1px solid var(--azia-gray-200);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.azia-card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transform: translateY(-1px);
+}
+
+/* Azia sidebar styles */
+.azia-sidebar {
+  background: white;
+  border-right: 1px solid var(--azia-gray-200);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.azia-sidebar-item {
+  color: var(--azia-gray-700);
+  transition: all 0.2s ease-in-out;
+  border-radius: 0.5rem;
+  margin: 0.25rem 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.azia-sidebar-item:hover {
+  background: var(--azia-gray-50);
+  color: var(--azia-gray-900);
+}
+
+.azia-sidebar-item.active {
+  background: var(--azia-primary);
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
+}
+
+/* Azia button styles */
+.btn-azia {
+  transition: all 0.2s ease-in-out;
+  transform: translateY(0);
+  border-radius: 0.5rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+}
+
+.btn-azia:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+}
+
+.btn-azia-primary {
+  background: var(--azia-primary);
+  color: white;
+  border: none;
+}
+
+.btn-azia-primary:hover {
+  background: var(--azia-primary-dark);
+}
+
+.btn-azia-secondary {
+  background: var(--azia-secondary);
+  color: white;
+  border: none;
+}
+
+.btn-azia-secondary:hover {
+  background: var(--azia-accent-dark);
+}
+
+/* Azia text colors */
+.text-azia-primary { color: var(--azia-primary); }
+.text-azia-secondary { color: var(--azia-secondary); }
+.text-azia-accent { color: var(--azia-accent); }
+.text-azia-success { color: var(--azia-success); }
+.text-azia-warning { color: var(--azia-warning); }
+.text-azia-error { color: var(--azia-error); }
+
+/* Azia background colors */
+.bg-azia-primary { background-color: var(--azia-primary); }
+.bg-azia-secondary { background-color: var(--azia-secondary); }
+.bg-azia-accent { background-color: var(--azia-accent); }
+.bg-azia-success { background-color: var(--azia-success); }
+.bg-azia-warning { background-color: var(--azia-warning); }
+.bg-azia-error { background-color: var(--azia-error); }
+
+/* Enhanced Alert System - Backgrounds */
+.azia-success-50 { background-color: var(--azia-success-light); }
+.azia-warning-50 { background-color: var(--azia-warning-light); }
+.azia-error-50 { background-color: var(--azia-error-light); }
+.azia-info-50 { background-color: var(--azia-info-light); }
+.azia-critical-50 { background-color: var(--azia-critical-light); }
+.azia-maintenance-50 { background-color: var(--azia-maintenance-light); }
+
+.azia-success-100 { background-color: var(--azia-success-light); }
+.azia-warning-100 { background-color: var(--azia-warning-light); }
+.azia-error-100 { background-color: var(--azia-error-light); }
+.azia-info-100 { background-color: var(--azia-info-light); }
+.azia-critical-100 { background-color: var(--azia-critical-light); }
+.azia-maintenance-100 { background-color: var(--azia-maintenance-light); }
+
+/* Alert Text Colors */
+.azia-success-500 { color: var(--azia-success); }
+.azia-warning-500 { color: var(--azia-warning); }
+.azia-error-500 { color: var(--azia-error); }
+.azia-info-500 { color: var(--azia-info); }
+.azia-critical-500 { color: var(--azia-critical); }
+.azia-maintenance-500 { color: var(--azia-maintenance); }
+
+.azia-success-600 { color: var(--azia-success-dark); }
+.azia-warning-600 { color: var(--azia-warning-dark); }
+.azia-error-600 { color: var(--azia-error-dark); }
+.azia-info-600 { color: var(--azia-info-dark); }
+.azia-critical-600 { color: var(--azia-critical-dark); }
+.azia-maintenance-600 { color: var(--azia-maintenance-dark); }
+
+.azia-success-800 { color: var(--azia-success-dark); }
+.azia-warning-800 { color: var(--azia-warning-dark); }
+.azia-error-800 { color: var(--azia-error-dark); }
+.azia-info-800 { color: var(--azia-info-dark); }
+.azia-critical-800 { color: var(--azia-critical-dark); }
+.azia-maintenance-800 { color: var(--azia-maintenance-dark); }

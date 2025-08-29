@@ -145,10 +145,10 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="flex-1 overflow-y-auto">
+      <main className="ml-72 min-h-screen overflow-y-auto">
         <div className="p-8">
           {/* Header */}
           <div className="mb-8">
