@@ -5,8 +5,8 @@ import { Navigation } from '@/components/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar } from 'recharts'
-import { TrendingUp, TrendingDown, AlertTriangle, Thermometer, Droplets, Wind, Calendar, Download } from 'lucide-react'
-import { cn, detectAnomalies, linearRegression, formatEnergy, formatCurrency } from '@/lib/utils'
+import { TrendingUp, TrendingDown, AlertTriangle, Thermometer, Wind, Calendar, Download } from 'lucide-react'
+import { cn, detectAnomalies, formatEnergy } from '@/lib/utils'
 
 interface EnergyData {
   id: number
@@ -42,8 +42,8 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
-  const [energyData, setEnergyData] = useState<EnergyData[]>([])
-  const [weatherData, setWeatherData] = useState<WeatherData[]>([])
+  const [, setEnergyData] = useState<EnergyData[]>([])
+  const [, setWeatherData] = useState<WeatherData[]>([])
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([])
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState({
@@ -395,7 +395,7 @@ export default function AnalyticsPage() {
                       boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                       color: '#1f2937'
                     }}
-                    formatter={(value: any, name: string) => [
+                    formatter={(value: number, name: string) => [
                       name === 'kWh' ? formatEnergy(value) : value,
                       name === 'kWh' ? 'Energy Usage' : name
                     ]}
@@ -443,7 +443,7 @@ export default function AnalyticsPage() {
                       color: '#1f2937'
                     }}
                     labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                    formatter={(value: any, name: string) => [
+                    formatter={(value: number, name: string) => [
                       formatEnergy(value),
                       name === 'kWh' ? 'Actual Usage' : 'Normalized Usage'
                     ]}

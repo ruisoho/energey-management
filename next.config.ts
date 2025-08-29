@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma']
-  },
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   images: {
     domains: ['images.unsplash.com', 'unsplash.com']
   }

@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { KPICard } from "@/components/kpi-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts'
-import { Activity, Zap, TrendingUp, DollarSign, Building, Thermometer, Calendar, Users, BarChart3 } from "lucide-react"
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
+import { Activity, Zap, TrendingUp, DollarSign, Calendar, BarChart3 } from "lucide-react"
 import { formatCurrency, formatEnergy, formatCO2 } from "@/lib/utils"
 
 // Mock data for demonstration

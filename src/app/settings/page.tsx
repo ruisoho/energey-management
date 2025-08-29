@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Building, MapPin, Thermometer, Euro, Zap, Save, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react'
+import { Building, Thermometer, Zap, Save, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface BuildingSettings {
@@ -173,7 +173,7 @@ export default function SettingsPage() {
     setSaved(false)
   }
 
-  const updateSetting = (key: string, value: any) => {
+  const updateSetting = (key: keyof BuildingSettings, value: string | number | boolean) => {
     setSettings(prev => ({
       ...prev,
       [key]: value
@@ -189,11 +189,11 @@ export default function SettingsPage() {
     }
   }
 
-  const updateNestedSetting = (parent: string, key: string, value: any) => {
+  const updateNestedSetting = (parent: 'notifications' | 'thresholds', key: string, value: boolean | number) => {
     setSettings(prev => ({
       ...prev,
       [parent]: {
-        ...prev[parent as keyof BuildingSettings] as any,
+        ...prev[parent],
         [key]: value
       }
     }))

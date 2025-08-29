@@ -2,9 +2,9 @@
 
 import { useState, useRef } from 'react'
 import { Navigation } from '@/components/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Download, FileText, Calendar, TrendingUp, TrendingDown, Zap, Euro, Leaf, AlertTriangle, BarChart3 } from 'lucide-react'
 import { formatEnergy, formatCurrency, formatCO2, calculatePercentageChange } from '@/lib/utils'
 import jsPDF from 'jspdf'
@@ -420,7 +420,7 @@ export default function ReportsPage() {
                         boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)',
                         color: '#1f2937' 
                       }}
-                      formatter={(value: any) => [formatEnergy(value), 'Energy']}
+                      formatter={(value: number) => [formatEnergy(value), 'Energy']}
                     />
                     <Line 
                       type="monotone" 
@@ -470,7 +470,7 @@ export default function ReportsPage() {
                         boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)',
                         color: '#1f2937' 
                       }}
-                      formatter={(value: any) => [`${value}%`, 'Usage']}
+                      formatter={(value: number) => [`${value}%`, 'Usage']}
                     />
                   </PieChart>
                 </ResponsiveContainer>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
 
 interface EnergyDataInput {
   timestamp: string
@@ -18,7 +19,13 @@ export async function GET(request: NextRequest) {
     const source = searchParams.get('source')
     const limit = searchParams.get('limit')
 
-    const where: any = {}
+    const where: {
+      timestamp?: {
+        gte: Date;
+        lte: Date;
+      };
+      source?: string;
+    } = {}
     
     if (startDate && endDate) {
       where.timestamp = {
@@ -40,9 +47,9 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate summary statistics
-    const totalKWh = energyData.reduce((sum: number, reading: any) => sum + reading.kWh, 0)
-    const totalCost = energyData.reduce((sum: number, reading: any) => sum + reading.cost, 0)
-    const totalCO2 = energyData.reduce((sum: number, reading: any) => sum + reading.co2, 0)
+    const totalKWh = energyData.reduce((sum: number, reading: { kWh: number }) => sum + reading.kWh, 0)
+    const totalCost = energyData.reduce((sum: number, reading: { cost: number }) => sum + reading.cost, 0)
+    const totalCO2 = energyData.reduce((sum: number, reading: { co2: number }) => sum + reading.co2, 0)
     const avgKWh = energyData.length > 0 ? totalKWh / energyData.length : 0
 
     return NextResponse.json({
@@ -97,7 +104,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Use transaction to ensure all records are created or none
-    const result = await prisma.$transaction(async (tx: any) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const createdRecords = await tx.energyReading.createMany({
         data: validatedData,
         skipDuplicates: true // Skip records with duplicate timestamps

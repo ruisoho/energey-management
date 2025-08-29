@@ -73,12 +73,12 @@ export async function GET(request: NextRequest) {
     // Calculate summary statistics
     const summary = {
       totalDays: processedData.length,
-      avgTemperature: processedData.reduce((sum: number, day: any) => sum + day.avgTemp, 0) / processedData.length,
-      totalPrecipitation: processedData.reduce((sum: number, day: any) => sum + day.precipitation, 0),
-      totalHeatingDegreeDays: processedData.reduce((sum: number, day: any) => sum + day.heatingDegreeDays, 0),
-      totalCoolingDegreeDays: processedData.reduce((sum: number, day: any) => sum + day.coolingDegreeDays, 0),
-      minTemperature: Math.min(...processedData.map((day: any) => day.minTemp)),
-      maxTemperature: Math.max(...processedData.map((day: any) => day.maxTemp))
+      avgTemperature: processedData.reduce((sum: number, day: { avgTemp: number }) => sum + day.avgTemp, 0) / processedData.length,
+      totalPrecipitation: processedData.reduce((sum: number, day: { precipitation: number }) => sum + day.precipitation, 0),
+      totalHeatingDegreeDays: processedData.reduce((sum: number, day: { heatingDegreeDays: number }) => sum + day.heatingDegreeDays, 0),
+      totalCoolingDegreeDays: processedData.reduce((sum: number, day: { coolingDegreeDays: number }) => sum + day.coolingDegreeDays, 0),
+      minTemperature: Math.min(...processedData.map((day: { minTemp: number }) => day.minTemp)),
+      maxTemperature: Math.max(...processedData.map((day: { maxTemp: number }) => day.maxTemp))
     }
 
     return NextResponse.json({
