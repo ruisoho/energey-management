@@ -138,7 +138,7 @@ export async function DELETE(request: NextRequest) {
     if (id) {
       // Delete specific record
       await prisma.energyReading.delete({
-        where: { id: parseInt(id) }
+        where: { id: id }
       })
       return NextResponse.json({ message: 'Record deleted successfully' })
     } else if (startDate && endDate) {
